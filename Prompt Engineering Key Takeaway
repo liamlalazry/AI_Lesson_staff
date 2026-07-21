@@ -1,0 +1,213 @@
+The Baiscs.
+
+**Think of Claude as a brilliant but new employee** who lacks context on your norms and workflows Be clear and direct Being specific about your desired output can help enhance results , 
+using clear direct action verbs can be efficient like analyze or generate 
+State what you want the output to include and expectation
+
+**What makes a prompt specific enough?**
+
+Include:
+
+- Clear constraints (word count, format, timeline)
+- Relevant context (who's the audience, what's the goal)
+- Desired output structure (table, list, paragraph)
+- Any requirements or restrictions (dietary needs, budget limits, technical constraints) 
+
+**Add context to improve performance** -when explaining why u need something and context u are making claude be able to give more targeted results 
+
+Effective Examples - 
+Examples aren't always necessary, but they shine **when explaining concepts or demonstrating specific formats**
+**Claude 4.x and similar advanced models pay very close attention to details in examples. Ensure your examples align with the behaviors you want to encourage and minimize any patterns you want to avoid.**
+when to use?
+- The desired format is easier to show than describe
+- You need a specific tone or style
+- The task involves subtle patterns or conventions
+- Simple instructions haven't produced consistent results
+
+**Pro tip**: Start with one example (one-shot). Only add more examples (few-shot) if the output still doesn't match your needs.
+
+
+Give the AI explicit permission to express uncertainty rather than guessing. This reduces hallucinations and increases reliability.
+
+
+Mirrors your scenerio in an accurate way 
+cover edge cases to target claude to explain the pattern 
+use <example> <example> tags 
+
+Structure prompts with XML tags
+XML tags help Claude parse complex prompts unambiguously, especially when your prompt mixes instructions, context, examples, and variable inputs. Wrapping each type of content in its own tag (for example, `<instructions>`, `<context>`, `<input>`) reduces misinterpretation.
+
+u can use nest tags 
+<documents>
+  <document index="1">
+    <source>annual_report_2023.pdf</source>
+    <document_content>
+      {{ANNUAL_REPORT}}
+    </document_content>
+  </document>
+  <document index="2">
+    <source>competitor_analysis_q2.xlsx</source>
+    <document_content>
+      {{COMPETITOR_ANALYSIS}}
+    </document_content>
+  </document>
+</documents>
+**When XML tags might still be helpful**:
+
+- You're working with extremely complex prompts mixing multiple types of content
+- You need to be absolutely certain about content boundaries
+- You're working with older model versions
+
+**Modern alternative**: For most use cases, clear headings, whitespace, and explicit language ("Using the athlete information below...") work just as well with less overhead.
+Analyze the annual report and competitor analysis. Identify strategic advantages and recommend Q3 focus areas.
+
+Give Claude a role
+
+explicit about what perspective you want is more effective
+
+Long context prompting
+
+
+**Put longform data at the top** first big files the examples and queries
+**Structure document content and metadata with XML tags**
+
+**round responses in quotes:** For long document tasks, ask Claude to quote relevant parts of the documents first before carrying out its task. This helps Claude focus on the relevant content and ignore the rest of the document.
+
+
+To make Claude more proactive about taking action by default, you can add this to your system prompt:
+
+Sample prompt for proactive action
+
+```
+<default_to_action>
+By default, implement changes rather than only suggesting them. If the user's intent is
+unclear, infer the most useful likely action and proceed, using tools to discover any
+missing details instead of guessing. Try to infer the user's intent about whether a tool
+call (e.g., file edit or read) is intended or not, and act accordingly.
+</default_to_action>
+```
+
+```
+<do_not_act_before_instructions>
+Do not jump into implementation or change files unless clearly instructed to make
+changes. When the user's intent is ambiguous, default to providing information, doing
+research, and providing recommendations rather than taking action. Only proceed with
+edits, modifications, or implementations when the user explicitly requests them.
+</do_not_act_before_instructions>
+```
+<use_parallel_tool_calls>
+If you intend to call multiple tools and there are no dependencies between the tool
+calls, make all of the independent tool calls in parallel. Prioritize calling tools
+simultaneously whenever the actions can be done in parallel rather than sequentially.
+For example, when reading 3 files, run 3 tool calls in parallel to read all 3 files into
+context at the same time. Maximize use of parallel tool calls where possible to increase
+speed and efficiency. However, if some tool calls depend on previous calls to inform
+dependent values like the parameters, do NOT call these tools in parallel and instead
+call them sequentially. Never use placeholders or guess missing parameters in tool
+calls.
+</use_parallel_tool_calls>
+
+```
+<investigate_before_answering>
+Never speculate about code you have not opened. If the user references a specific file,
+you MUST read the file before answering. Make sure to investigate and read relevant
+files BEFORE answering questions about the codebase. Never make any claims about code
+before investigating unless you are certain of the correct answer - give grounded and
+hallucination-free answers.
+</investigate_before_answering>
+```
+<frontend_aesthetics>
+You tend to converge toward generic, "on distribution" outputs. In frontend design, this
+creates what users call the "AI slop" aesthetic. Avoid this: make creative, distinctive
+frontends that surprise and delight.
+
+Focus on:
+- Typography: Choose fonts that are beautiful, unique, and interesting. Avoid generic
+fonts like Arial and Inter; opt instead for distinctive choices that elevate the
+frontend's aesthetics.
+- Color & Theme: Commit to a cohesive aesthetic. Use CSS variables for consistency.
+Dominant colors with sharp accents outperform timid, evenly-distributed palettes. Draw
+from IDE themes and cultural aesthetics for inspiration.
+- Motion: Use animations for effects and micro-interactions. Prioritize CSS-only
+solutions for HTML. Use Motion library for React when available. Focus on high-impact
+moments: one well-orchestrated page load with staggered reveals (animation-delay)
+creates more delight than scattered micro-interactions.
+- Backgrounds: Create atmosphere and depth rather than defaulting to solid colors. Layer
+CSS gradients, use geometric patterns, or add contextual effects that match the overall
+aesthetic.
+
+Avoid generic AI-generated aesthetics:
+- Overused font families (Inter, Roboto, Arial, system fonts)
+- Clichéd color schemes (particularly purple gradients on white backgrounds)
+- Predictable layouts and component patterns
+- Cookie-cutter design that lacks context-specific character
+
+Interpret creatively and make unexpected choices that feel genuinely designed for the
+context. Vary between light and dark themes, different fonts, different aesthetics. You
+still tend to converge on common choices (Space Grotesk, for example) across
+generations. Avoid this: it is critical that you think outside the box!
+</frontend_aesthetics>
+
+https://code.claude.com/docs/en/prompt-library
+
+להוסיף על צורת החשיבה thinking adaptive/
+
+
+
+Advanced Techniques 
+
+
+### Prefill the AI's response - starting the response for it 
+
+**When to use prefilling**:
+
+- You need the AI to output JSON, XML, or other structured formats
+- You want to skip conversational preambles and get straight to content
+- You need to maintain a specific voice or character
+- You want to control how the AI begins its response
+
+
+### Chain of thought prompting
+
+Chain of thought (CoT) prompting involves requesting step-by-step reasoning before answering. This technique helps with complex analytical tasks that benefit from structured thinking.
+
+
+**When to use chain of thought**:
+
+- Extended thinking isn't available (i.e. the free [Claude.ai](http://claude.ai/redirect/claudedotcom.v1.0c28be7b-c21b-419e-8f2d-22cb55ed9149) plan)
+- You need transparent reasoning that you can review
+- The task requires multiple analytical steps
+- You want to ensure the AI considers specific factors
+
+WAYS:
+- just say think step by step
+- in your prompt tell it what u want it to think about First...Second
+- U can seperate the thinking from the result by <tags> like <thinking><thinking>
+- <email><email>
+
+
+### Prompt chaining
+Each prompt handles one stage, and the output feeds into the next instruction.This approach trades latency for higher accuracy by making each individual task easier
+
+For Example:
+
+Summary Article -> Review Your Summary -> fix by the review
+**hen to use prompt chaining**:
+
+- You have a complex request that needs breaking down into steps
+- You need iterative refinement
+- You're doing multi-stage analysis
+- Intermediate validation adds value
+- A single prompt produces inconsistent results
+
+**Trade-offs**: Chaining increases latency (multiple API calls) but often dramatically improves accuracy and reliability for complex tasks.
+
+
+some guided questions 
+**1. s your request clear and explicit? If no, work on clarity first
+2. Is the task simple? Use core techniques only (be specific, be clear, provide context)
+3. Does the task require specific formatting? Use examples or prefilling
+4. Is the task complex? Consider breaking it down (chaining)
+5. Does it need reasoning? Use extended thinking (if available) or chain of thought**
+
+the best prompt isn't the longest or most complex. It's the one that achieves your goals reliably with the minimum necessary structure.
